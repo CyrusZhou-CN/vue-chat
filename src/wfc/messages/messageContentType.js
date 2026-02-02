@@ -97,8 +97,21 @@ export default class MessageContentType {
     static VOIP_Multi_Call_Ongoing = 416;
     static VOIP_Join_Call_Request = 417;
 
+    static VOIP_REMOTE_CONTROL_INVITE = 430;
+    static VOIP_REMOTE_CONTROL_REQUEST = 431;
+    static VOIP_REMOTE_CONTROL_ACCEPT_INVITE = 432;
+    static VOIP_REMOTE_CONTROL_ACCEPT_REQUEST = 433;
+    static VOIP_REMOTE_CONTROL_END = 434;
     static MESSAGE_CONTENT_TYPE_FEED = 501;
     static MESSAGE_CONTENT_TYPE_COMMENT = 502;
     static MESSAGE_CONTENT_TYPE_MIX_MULTI_MEDIA_TEXT= 510;
     static MESSAGE_CONTENT_TYPE_MIX_FILE_TEXT= 511;
+    // 恢复请求 - iOS端请求从PC恢复
+    static MESSAGE_CONTENT_TYPE_RESTORE_REQUEST = 610;
+    // 恢复响应 - PC端响应该恢复请求
+    static MESSAGE_CONTENT_TYPE_RESTORE_RESPONSE = 611;
+    // 备份响应 - PC端响应该备份请求
+    static MESSAGE_CONTENT_TYPE_BACKUP_RESPONSE = 612;
+    // 备份请求 - iOS端请求备份到PC
+    static MESSAGE_CONTENT_TYPE_BACKUP_REQUEST = 613;
 }

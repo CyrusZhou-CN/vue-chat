@@ -61,4 +61,6 @@ export default class EventType {
     // function (domainInfo) {}
     static DomainInfoUpdate = 'domainInfoUpdate';
 
+    // function (domainInfo) {}
+    static JoinGroupRequestUpdate = 'joinGroupRequestUpdate';
 }

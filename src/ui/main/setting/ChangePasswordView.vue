@@ -2,7 +2,7 @@
     <div class="password-form-container">
         <p class="title">修改密码</p>
         <div class="item">
-            <input v-model.trim="oldPassword" class="text-input" type="number" placeholder="请输入旧密码">
+            <input v-model.trim="oldPassword" class="text-input" type="text" placeholder="请输入旧密码">
         </div>
         <div class="item">
             <input v-model.trim="newPassword" class="text-input" type="text" placeholder="请输入新密码">
@@ -11,16 +11,28 @@
             <input v-model.trim="confirmPassword" class="text-input" type="text" placeholder="请再次输入新密码">
         </div>
         <p class="tip" v-if="newPassword && confirmPassword && newPassword !== confirmPassword">两次输入的密码不一致</p>
-        <button class="confirm-button" :disabled="oldPassword === '' || newPassword === '' || confirmPassword === '' || newPassword !== confirmPassword" @click="changePassword">确定</button>
+        <button class="confirm-button" :disabled="oldPassword === '' || newPassword === '' || confirmPassword === '' || newPassword !== confirmPassword" @click="showSlideVerify">确定</button>
+
+        <!-- 滑动验证组件 -->
+        <SlideVerifyDialog
+            ref="slideVerifyDialog"
+            @verify-success="onSlideVerifySuccess"
+            @verify-failed="onSlideVerifyFailed"
+            @load-failed="onSlideVerifyLoadFailed"
+        />
     </div>
 </template>
 
 <script>
 
 import appServerApi from "../../../api/appServerApi";
+import SlideVerifyDialog from "../../common/SlideVerifyDialog.vue";
 
 export default {
     name: "CreateConferenceView",
+    components: {
+        SlideVerifyDialog,
+    },
     data() {
         return {
             oldPassword: '',
@@ -30,14 +42,22 @@ export default {
     },
 
     methods: {
-        async changePassword() {
+        showSlideVerify() {
+            this.$refs.slideVerifyDialog.show();
+        },
+
+        async changePassword(slideVerifyToken) {
             this.$modal.hide('change-password-modal')
-            appServerApi.changePassword(this.oldPassword, this.newPassword)
+            appServerApi.changePassword(this.oldPassword, this.newPassword, slideVerifyToken)
                 .then(response => {
                     this.$notify({
                         text: '修改密码成功',
                         type: 'info'
                     });
+                    // 清空输入框
+                    this.oldPassword = '';
+                    this.newPassword = '';
+                    this.confirmPassword = '';
                 })
                 .catch(err => {
                     this.$notify({
@@ -47,6 +67,25 @@ export default {
                     });
                 })
         },
+        // 滑动验证成功回调
+        onSlideVerifySuccess(token) {
+            console.log('[ChangePassword] 滑动验证成功，token:', token);
+            this.changePassword(token);
+        },
+
+        // 滑动验证失败回调
+        onSlideVerifyFailed() {
+            console.log('[ChangePassword] 滑动验证失败');
+        },
+
+        // 滑动验证加载失败回调
+        onSlideVerifyLoadFailed() {
+            console.log('[ChangePassword] 滑动验证加载失败');
+            this.$notify({
+                text: '验证码加载失败，请重试',
+                type: 'error'
+            });
+        }
     },
 }
 </script>

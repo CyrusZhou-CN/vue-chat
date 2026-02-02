@@ -93,6 +93,8 @@
             </router-view>
             <div v-if="sharedMiscState.connectionStatus === -1" class="unconnected">网络连接断开</div>
             <div class="drag-area" :style="dragAreaLeft"></div>
+            <!-- 备份进度窗口 -->
+            <BackupView v-if="sharedMiscState.isElectron" class="backup-progress-modal"  />
             <UseDraggable v-if="!sharedMiscState.isElectron && sharedMiscState.isVoipOngoing"
                           class="voip-div-container"
                           :initial-value="{x:'50%', y:'50%'}"
@@ -115,7 +117,7 @@ import EventType from "../../wfc/client/wfcEvent";
 import ConnectionStatus from "../../wfc/client/connectionStatus";
 import ElectronWindowsControlButtonView from "../common/ElectronWindowsControlButtonView.vue";
 import {removeItem} from "../util/storageHelper";
-import {ipcRenderer} from "../../platform";
+import {ipcRenderer, app} from "../../platform";
 import avenginekit from "../../wfc/av/internal/engine.min";
 import avenginekitproxy from "../../wfc/av/engine/avenginekitproxy";
 import IpcEventType from "../../ipcEventType";
@@ -127,6 +129,7 @@ import 'tippy.js/dist/tippy.css' // optional for styling
 import {UseDraggable} from '@vueuse/components'
 import AI from "./AI.vue";
 import Config from "../../config";
+import BackupView from '../../backup/BackupView.vue'
 
 var avenginkitSetuped = false;
 export default {
@@ -322,6 +325,7 @@ export default {
     },
 
     components: {
+        BackupView,
         AI,
         Conference,
         Multi,
@@ -496,5 +500,17 @@ i.active {
 .voip-div-container .content {
     flex: 1;
     border: none;
+}
+.backup-progress-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
 }
 </style>
